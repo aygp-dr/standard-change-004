@@ -18,6 +18,7 @@ drawing them before the distinction is built is how the conflation got in.
 | =apps/core/config/environments/*.rb= | three behaviour profiles, and no =staging.rb= |
 | =apps/core/hosts.tsv= | placements, each declaring which environment it runs |
 | =apps/core/manifest.tsv= | =app:core=, derived from a path glob |
+| =apps/core/classification.tsv= | =itil:*=, retained to fit the structure, not exercised here |
 | =apps/core/src/server.py= | serves =x-env=, =x-host=, =x-build= separately |
 
 * The demonstration

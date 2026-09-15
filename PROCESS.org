@@ -46,13 +46,25 @@ drops the prefix because n=1 teaches a shape that breaks at n=2, and the system
 this mirrors has more than one app. It is derived from a path glob
 (=apps/core/manifest.tsv=), never asserted.
 
-It also completes the triple this repo is about:
+=itil:{standard,normal,emergency}= is *retained but not exercised*
+(=apps/core/classification.tsv=). It has to fit the structure; 004 does not
+test it, because 004 uses no pull requests, no workflow and no validation. Any
+claim here about it is =[H]=.
 
-| question | answered by |
-|----------+-------------|
-| what moves | =app:core= |
-| where it is placed | =APP_HOST= |
-| how it behaves | =RAILS_ENV= |
+Together they are four questions, and the fourth is a different KIND:
+
+| question | answered by | observable? |
+|----------+-------------+-------------|
+| what moves | =app:core= | yes — derived from the diff |
+| where it is placed | =APP_HOST= | yes — ask the estate |
+| how it behaves | =RAILS_ENV= | yes — ask the estate |
+| which rules apply | =itil:*= | *no* |
+
+The first three are facts about a *running program* and you can curl for them.
+The fourth is a fact about a *proposal to change it*, and there is nothing to
+measure — the judgement is made before the change exists in any environment.
+A guard that derives it from the diff is deriving *blast radius* and calling it
+*risk*, which is a different question wearing the same word.
 
 Deliberately NOT here, and not inherited from slipway or any earlier rebuild:
 
