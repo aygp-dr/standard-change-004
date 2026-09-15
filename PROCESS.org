@@ -1,0 +1,105 @@
+#+TITLE: standard-change-004 — environment is not hosting
+#+DATE: 2026-09-15
+
+* The claim under test
+
+#+BEGIN_QUOTE
+Every earlier build conflated *where a build runs* with *how a build behaves*,
+and called the result an "environment". Separate them and the pipeline changes
+shape.
+#+END_QUOTE
+
+* Why Rails
+
+Because Rails *refuses* the example. Its environments are three and fixed —
+=development=, =test=, =production= — and **=staging= is not one of them.**
+
+A team that adds =config/environments/staging.rb= discovers that
+=Rails.env.production?= is now FALSE there, so every production-only code path
+silently stops running and staging stops resembling production. The standard
+answer is to deploy the staging *host* with =RAILS_ENV=production=.
+
+Which is the whole finding, arrived at by a community rather than argued:
+
+- =RAILS_ENV= names a *behaviour profile* — eager loading, caching, log level,
+  error pages, secret handling.
+- Where it runs is a *placement* — a laptop, a CI runner, a shared box, a
+  fleet.
+- **The cross product is real and both axes are used.** =RAILS_ENV=production=
+  on a laptop is how you reproduce a production bug. =RAILS_ENV=development= on
+  a shared box is how a team demos. Neither is a mistake.
+
+Our earlier builds had ONE axis. "staging" meant both a port and an authority;
+"production" meant both a fleet and a behaviour. Guard 4 reads an observation
+from "staging" — but what makes that observation worth anything is that the
+staging *host* runs the production *environment*. If it ran =development=, the
+verdict would be worthless and no guard would notice.
+
+* Scope: the fixture, and nothing else
+
+**This repository contains a mock app and its environment/host configuration.
+Nothing else.**
+
+*One label namespace is kept:* =app:*=, and =app:core= is its only member.
+The namespace transfers to a real estate; the count does not. A fixture that
+drops the prefix because n=1 teaches a shape that breaks at n=2, and the system
+this mirrors has more than one app. It is derived from a path glob
+(=apps/core/manifest.tsv=), never asserted.
+
+It also completes the triple this repo is about:
+
+| question | answered by |
+|----------+-------------|
+| what moves | =app:core= |
+| where it is placed | =APP_HOST= |
+| how it behaves | =RAILS_ENV= |
+
+Deliberately NOT here, and not inherited from slipway or any earlier rebuild:
+
+- no lifecycle labels, no verdict labels, no intent labels, no registry
+- no workflows
+- no gates, no guards, no change scripts
+- no calendar, no berth, no lock
+
+Those are *conclusions*, and drawing them before the distinction is built is how
+the conflation got in. The question this repo answers first is narrower:
+
+#+BEGIN_QUOTE
+Can a fixture make "which environment" and "which host" independently
+observable, such that a reader can tell them apart without being told?
+#+END_QUOTE
+
+Only once that is true does it become worth asking which guards read which
+axis.
+
+* What the app must expose
+
+Two facts, separately, on every response — because a single =x-build-sha= is
+what let the two collapse:
+
+| header | answers | example |
+|--------+---------+---------|
+| =x-env= | how does this build BEHAVE | =production= |
+| =x-host= | where is it PLACED | =staging-1= |
+| =x-build= | which build | =2249f10= |
+
+The demonstration is the cross product: the same environment on two hosts, and
+two environments on one host, both reachable, both correct.
+
+* Prediction, recorded before building
+
+Separating the axes will show that the guards divide unevenly:
+
+- guard 5 (convergence) reads *host* only — it asks what a placement serves
+- guard 4 (authorization) reads *host* but is only meaningful because of that
+  host's *environment*, and that dependency is currently nowhere written
+- the port tiers are *hosting* entirely, and say nothing about behaviour
+- =itil:*= classification is about the *change* and reads neither
+
+If that holds, the interesting defect is guard 4: an authorization whose
+validity rests on a property no guard checks.
+
+* Epistemics
+
+=[E]= observed here. =[H]= inferred or carried. Anything measured elsewhere is
+cited with where. This repo asserts nothing about slipway's estate.

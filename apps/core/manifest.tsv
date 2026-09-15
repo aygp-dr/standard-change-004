@@ -1,0 +1,21 @@
+# THE MANIFEST -- what a change moves. One row per app.
+#
+# There is one app here and the `app:` namespace is kept anyway, deliberately.
+# The namespace is what transfers to a real estate; the count is not. A
+# fixture that drops the prefix because n=1 teaches a shape that breaks the
+# moment n=2, and the system this mirrors has more than one.
+#
+# This is the ONLY label namespace 004 carries. No lifecycle labels, no
+# verdicts, no intent, no registry -- those are conclusions, and 004 exists to
+# get the environment/host distinction right before drawing any.
+#
+# `app:core` answers WHAT MOVES. It says nothing about where it is placed
+# (APP_HOST) or how it behaves (RAILS_ENV). Three questions, three answers,
+# which is the whole design:
+#
+#     app:core         what moves
+#     APP_HOST         where it is placed
+#     RAILS_ENV        how it behaves
+#
+# label	path_glob	note
+app:core	apps/core/**	the only app. The glob is the derivation -- a change is app:core because it touched these paths, not because someone said so

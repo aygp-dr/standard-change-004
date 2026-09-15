@@ -1,0 +1,18 @@
+# HOSTS -- where a build is PLACED. Orthogonal to which environment it runs.
+#
+# This file exists because the earlier builds had one axis and called it
+# "environments". A host is a placement: a port, a machine, a lifetime. What
+# it RUNS is a separate column, and the cross product is the whole point.
+#
+# `authorizing` is a property of the HOST, not of the environment, and it is
+# the one slipway never wrote down: a staging host's verdict counts because we
+# have decided that host stands in for production AND it runs production's
+# behaviour. Either half missing and the verdict is worth nothing.
+#
+# host	env	port	lifetime	authorizing	note
+laptop	development	3000	until you stop it	no	a person's machine; any env is legal here
+laptop-prod-repro	production	3001	minutes	no	RAILS_ENV=production on a laptop. Legal, common, and NOT authorizing -- the behaviour is right, the placement is not
+ci-runner	test	3002	one job	no	where a build is JUDGED. Ephemeral by construction; nothing is placed here
+staging-1	production	3003	until redeployed	yes	THE REHEARSAL. Authorizing precisely because it runs `production` on a host we trust to stand in
+demo-1	development	3004	a sprint	no	RAILS_ENV=development on a shared box. Legal, and a verdict from here is meaningless
+prod-1	production	3005	forever	yes	what customers get

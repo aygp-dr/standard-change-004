@@ -1,0 +1,48 @@
+#+TITLE: standard-change-004
+#+DATE: 2026-09-15
+
+A rebuild that tests one claim: *environment and hosting have been conflated,
+and separating them changes the pipeline.*
+
+Read =PROCESS.org= first — it carries the claim, why Rails, the scope, and a
+prediction recorded before building.
+
+* What is here
+
+A mock app and its configuration. Nothing else: no labels beyond =app:core=,
+no workflows, no gates, no guards, no calendar. Those are conclusions, and
+drawing them before the distinction is built is how the conflation got in.
+
+| path | what it is |
+|------+------------|
+| =apps/core/config/environments/*.rb= | three behaviour profiles, and no =staging.rb= |
+| =apps/core/hosts.tsv= | placements, each declaring which environment it runs |
+| =apps/core/manifest.tsv= | =app:core=, derived from a path glob |
+| =apps/core/src/server.py= | serves =x-env=, =x-host=, =x-build= separately |
+
+* The demonstration
+
+#+begin_src sh :eval no
+RAILS_ENV=production  APP_HOST=staging-1         PORT=3003 apps/core/src/server.py &
+RAILS_ENV=production  APP_HOST=laptop-prod-repro PORT=3001 apps/core/src/server.py &
+RAILS_ENV=development APP_HOST=demo-1            PORT=3004 apps/core/src/server.py &
+#+end_src
+
+Observed [E]:
+
+| host | x-env | authorizing |
+|------+-------+-------------|
+| =staging-1= | production | *yes* |
+| =laptop-prod-repro= | production | no |
+| =demo-1= | development | no |
+
+Two hosts run the *same environment* and only one can authorize. That is the
+fact a single axis cannot represent, and every earlier build had a single axis.
+
+And asking for the environment that does not exist:
+
+#+begin_example
+$ RAILS_ENV=staging apps/core/src/server.py
+RAILS_ENV='staging' is not an environment. Available: ['development', 'production', 'test'].
+If you meant a PLACE, that is APP_HOST -- see apps/core/hosts.tsv.
+#+end_example
